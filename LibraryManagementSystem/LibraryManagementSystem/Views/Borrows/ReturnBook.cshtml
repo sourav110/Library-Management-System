@@ -1,0 +1,85 @@
+﻿@model LibraryManagementSystem.Models.Borrow
+@using Vereyon.Web;
+@{
+    ViewBag.Title = "ReturnBook";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Return Book</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.RenderFlashMessages()
+
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.MemberNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MemberNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MemberNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" id="buttonShow" value="Show Borrowed Books" class="btn btn-default" />
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.BookId, "BookId", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("BookId", null, "--Select one--", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BookId, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.Label("Borrowed Booklist")
+            <select class="form-control" id="bookId" name="bookId">
+                <option value="">--Select Book--</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Return" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts
+
+{
+    <script>
+        $(document).ready(function () {
+            $("#buttonShow").click(function () {
+                var id = $("#MemberNo").val();
+                var param = { memberNo: id }
+
+                $('#bookId').empty();
+                $("#bookId").append('<option value= "">--Select--</option>');
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetBooksByMemberNo", "Borrows")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(param),
+                    success: function (bookList) {
+                        $.each(bookList, function (key, value) {
+                            $("#bookId").append('<option value= ' + value.BookId + '>' + value.Book.BookTitle + '</option>');
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+
+}
+
