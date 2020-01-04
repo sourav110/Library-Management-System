@@ -1,0 +1,41 @@
+﻿@model IEnumerable<LibraryManagementSystem_MVC.Models.BorrowBook>
+
+@{
+    ViewBag.Title = "all borrowed books";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>All Borrowed Books</h2>
+<hr />
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table table-striped table-bordered">
+    <tr>
+
+        <th>
+            @Html.DisplayName("Member No")
+        </th>
+        <th>
+            @Html.DisplayName("Borrowed Book Name")
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.MemberNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Book.Title)
+        </td>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { id = item.BorrowId })
+        </td>
+    </tr>
+}
+
+</table>
